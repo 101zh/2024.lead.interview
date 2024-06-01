@@ -4,7 +4,18 @@
 
 package frc.robot;
 
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -18,6 +29,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private ColorSensorV3 colorSensorV3;
+  private DoubleSolenoid solenoid;
+  private CANSparkMax neoMotor;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -27,6 +41,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+
+    colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
+    solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    neoMotor = new CANSparkMax(0, MotorType.kBrushless);
     m_robotContainer = new RobotContainer();
   }
 
