@@ -4,16 +4,13 @@
 
 package frc.robot;
 
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -33,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  private Timer timer;
   private RobotContainer m_robotContainer;
   private ColorSensorV3 colorSensorV3;
   private DoubleSolenoid solenoid;
@@ -52,6 +50,7 @@ public class Robot extends TimedRobot {
     colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
     solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); // TODO: Check this
     neoMotor = new CANSparkMax(0, MotorType.kBrushless);
+    timer = new Timer();
     m_robotContainer = new RobotContainer();
   }
 
@@ -131,9 +130,12 @@ public class Robot extends TimedRobot {
       neoMotor.set(0.0);
     }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+    if (timer.get() >= 5.0) {
+      neoMotor.set(0.0);
+      timer.stop();
+      timer.reset();
+    }
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
