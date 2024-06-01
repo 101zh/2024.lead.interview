@@ -46,7 +46,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-
     colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
     solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); // TODO: Check this
     neoMotor = new CANSparkMax(0, MotorType.kBrushless);
@@ -76,34 +75,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
   }
 
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {
-  }
-
-  @Override
-  public void disabledPeriodic() {
-  }
-
-  /**
-   * This autonomous runs the autonomous command selected by your
-   * {@link RobotContainer} class.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {
-  }
-
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -119,17 +90,21 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Color color = colorSensorV3.getColor();
-    boolean isRed = color.red >= 180 && color.green <= 25 && color.blue <= 55;
-    boolean isBlue = color.red <= 75 && color.blue >= 200;
+    boolean isRed = color.red >= 0.58 && color.green <= 0.01 && color.blue <= 0.15;
+    boolean isBlue = color.red <= 0.2 && color.green <= 0.7 && color.blue >= 0.75;
+    
+    // If red solenoid actuates & motor runs
     if (isRed) {
       solenoid.set(Value.kForward);
       neoMotor.set(0.5);
       timer.start();
+    // If blue solenoid retracts & motor stops runnning
     } else if (isBlue) {
       solenoid.set(Value.kReverse);
       neoMotor.set(0.0);
     }
 
+    // If motor has been running for 5 seconds stop it 
     if (timer.get() >= 5.0) {
       neoMotor.set(0.0);
       timer.stop();
