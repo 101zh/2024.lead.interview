@@ -102,14 +102,19 @@ public class Robot extends TimedRobot {
     } else if (isBlue) {
       solenoid.set(Value.kReverse);
       neoMotor.set(0.0);
+      stopAndResetTimer();
     }
 
-    // If motor has been running for 5 seconds stop it 
+    // If motor has been running for 5 seconds stop it & reset
     if (timer.get() >= 5.0) {
       neoMotor.set(0.0);
-      timer.stop();
-      timer.reset();
+      stopAndResetTimer();
     }
+  }
+
+  private void stopAndResetTimer(){
+    timer.stop();
+    timer.reset();
   }
 
   /** This function is called once when the robot is first started up. */
