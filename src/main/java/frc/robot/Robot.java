@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
-    solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); // TODO: Check this
+    solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     neoMotor = new CANSparkMax(0, MotorType.kBrushless);
     timer = new Timer();
     m_robotContainer = new RobotContainer();
