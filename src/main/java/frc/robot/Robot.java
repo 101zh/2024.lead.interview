@@ -30,8 +30,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private Timer timer;
   private RobotContainer m_robotContainer;
+  private Timer timer;
   private ColorSensorV3 colorSensorV3;
   private DoubleSolenoid solenoid;
   private CANSparkMax neoMotor;
@@ -43,9 +43,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
     colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
     solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     neoMotor = new CANSparkMax(0, MotorType.kBrushless);
