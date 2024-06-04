@@ -88,30 +88,31 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Color color = colorSensorV3.getColor();
     boolean isRed = color.red >= 0.58 && color.green <= 0.1 && color.blue <= 0.15;
-    boolean isBlue = color.red <= 0.2 && color.green <= 0.7 && color.blue >= 0.75;
-    
-    // If red solenoid actuates & motor runs
+
+    // If red, solenoid actuates & motor runs
     if (isRed) {
-      solenoid.set(Value.kForward);
-      neoMotor.set(0.5);
-      timer.start();
-    // If blue solenoid retracts & motor stops runnning
-    } else if (isBlue) {
-      solenoid.set(Value.kReverse);
-      neoMotor.set(0.0);
-      stopAndResetTimer();
-    }
+      if (timer.get() >= 5.0) {
+        neoMotor.set(0.0);
+      } else {
+        solenoid.set(Value.kForward);
+        neoMotor.set(0.5);
+        timer.start();
+      }
+    } else {
+      timer.stop();
+      timer.reset();
+      boolean isBlue = color.red <= 0.2 && color.green <= 0.7 && color.blue >= 0.75;
 
-    // If motor has been running for 5 seconds stop it & reset
-    if (timer.get() >= 5.0) {
-      neoMotor.set(0.0);
-      stopAndResetTimer();
+      // If blue, solenoid retracts & motor stops runnning
+      if (isBlue) {
+        solenoid.set(Value.kReverse);
+        neoMotor.set(0.0);
+        // If neither, solenoid set to off & motor stops running
+      } else {
+        neoMotor.set(0.0);
+        solenoid.set(Value.kOff);
+      }
     }
-  }
-
-  private void stopAndResetTimer(){
-    timer.stop();
-    timer.reset();
   }
 
   /** This function is called once when the robot is first started up. */
