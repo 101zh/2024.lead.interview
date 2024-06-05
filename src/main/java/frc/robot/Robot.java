@@ -32,9 +32,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private Timer timer;
-  private ColorSensorV3 colorSensorV3;
-  private DoubleSolenoid solenoid;
-  private CANSparkMax neoMotor;
+  private ColorSensorV3 colorSensor;
+  private DoubleSolenoid doubleSolenoid;
+  private CANSparkMax motorController;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -43,9 +43,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
-    solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-    neoMotor = new CANSparkMax(0, MotorType.kBrushless);
+    colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    motorController = new CANSparkMax(0, MotorType.kBrushless);
     timer = new Timer();
     m_robotContainer = new RobotContainer();
   }
@@ -86,31 +86,31 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    Color color = colorSensorV3.getColor();
-    boolean isRed = color.red >= 0.58 && color.green <= 0.1 && color.blue <= 0.15;
+    Color currentColor = colorSensor.getColor();
+    boolean isRed = currentColor.red >= 0.58 && currentColor.green <= 0.1 && currentColor.blue <= 0.15;
 
     // If red, solenoid actuates & motor runs
     if (isRed) {
       if (timer.get() >= 5.0) {
-        neoMotor.set(0.0);
+        motorController.set(0.0);
       } else {
-        solenoid.set(Value.kForward);
-        neoMotor.set(0.5);
+        motorController.set(0.5);
+        doubleSolenoid.set(Value.kForward);
         timer.start();
       }
     } else {
       timer.stop();
       timer.reset();
-      boolean isBlue = color.red <= 0.2 && color.green <= 0.7 && color.blue >= 0.75;
+      boolean isBlue = currentColor.red <= 0.2 && currentColor.green <= 0.7 && currentColor.blue >= 0.75;
 
       // If blue, solenoid retracts & motor stops runnning
       if (isBlue) {
-        solenoid.set(Value.kReverse);
-        neoMotor.set(0.0);
+        motorController.set(0.0);
+        doubleSolenoid.set(Value.kReverse);
         // If neither, solenoid set to off & motor stops running
       } else {
-        neoMotor.set(0.0);
-        solenoid.set(Value.kOff);
+        motorController.set(0.0);
+        doubleSolenoid.set(Value.kOff);
       }
     }
   }
