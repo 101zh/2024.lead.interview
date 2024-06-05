@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Color currentColor = colorSensor.getColor();
     boolean isRed = currentColor.red >= 0.58 && currentColor.green <= 0.1 && currentColor.blue <= 0.15;
+    boolean isBlue = currentColor.red <= 0.2 && currentColor.green <= 0.7 && currentColor.blue >= 0.75;
 
     // If red, solenoid actuates & motor runs
     if (isRed) {
@@ -101,7 +102,6 @@ public class Robot extends TimedRobot {
     } else {
       timer.stop();
       timer.reset();
-      boolean isBlue = currentColor.red <= 0.2 && currentColor.green <= 0.7 && currentColor.blue >= 0.75;
 
       // If blue, solenoid retracts & motor stops runnning
       if (isBlue) {
