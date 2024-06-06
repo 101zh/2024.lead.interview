@@ -102,14 +102,13 @@ public class Robot extends TimedRobot {
     } else {
       timer.stop();
       timer.reset();
+      motorController.set(0.0);
 
       // If blue, solenoid retracts & motor stops runnning
       if (isBlue) {
-        motorController.set(0.0);
         doubleSolenoid.set(Value.kReverse);
         // If neither, solenoid set to off & motor stops running
       } else {
-        motorController.set(0.0);
         doubleSolenoid.set(Value.kOff);
       }
     }
